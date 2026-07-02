@@ -5,6 +5,11 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.1.2] - 2026-07-02
+
+### Changed
+- Social preview card tagline is now "A Museum of Dropped Things".
+
 ## [0.1.1] - 2026-07-02
 
 ### Added
