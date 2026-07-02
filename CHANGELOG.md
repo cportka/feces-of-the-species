@@ -5,6 +5,25 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.2.0] - 2026-07-02
+
+The heritage restoration. The 2013 charm returns to the modern museum.
+
+### Added
+- The warp starfield is back: `js/starfield.js` is a faithful ES-module port of the original
+  `stars.js` (333 stars, max speed 3, the classic motion trail), running full-screen behind
+  every room. Honors `prefers-reduced-motion` with a static night sky.
+- Specimens twirl in from the void again — the original `feces-animation` keyframes
+  (rotate -300° while scaling up) now animate the gilded frame on every question.
+- Tangerine, the original cursive display face, self-hosted in `assets/fonts/` (SIL OFL 1.1,
+  notice in `assets/fonts/OFL.txt`) — headings are once more fancy, and once more sandybrown.
+
+### Changed
+- The museum wall is now the original black void, with content floating centered in the
+  viewport like 2013 intended. The lobby fade-in ceremony is retimed closer to the original's
+  patient pacing; mid-game screens stay brisk apart from the twirl.
+- Roadmap milestones renumbered: field submissions are now v0.3.0 and the leaderboard v0.4.0.
+
 ## [0.1.2] - 2026-07-02
 
 ### Changed

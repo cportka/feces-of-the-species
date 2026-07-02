@@ -1,8 +1,25 @@
-/* Feces of the Species — museum-wall aesthetic. No frameworks, no CDNs, just wall. */
+/* Feces of the Species — the void, the stars, the gilded frame. No CDNs, no frameworks.
+   Restored to the 2013 aesthetic: a black starfield, Tangerine cursive in sandybrown,
+   and specimens that twirl in from the deep. */
+
+@font-face {
+  font-family: Tangerine;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/tangerine-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Tangerine;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/tangerine-700.woff2") format("woff2");
+}
 
 :root {
-  --wall: #2b3a2f;
-  --wall-dark: #22302a;
+  --title: sandybrown;
   --gold: #c9a227;
   --gold-bright: #e6c766;
   --plaque: #f3ecd9;
@@ -10,50 +27,66 @@
   --ink: #efe9d8;
   --wrong: #8c2f2f;
   --right: #2f6b3a;
+  --cursive: Tangerine, "Brush Script MT", cursive;
 }
 
 * { box-sizing: border-box; }
 
+html, body { height: 100%; }
+
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 50% -20%, rgba(230, 199, 102, 0.12), transparent 60%),
-    linear-gradient(var(--wall), var(--wall-dark));
+  display: flex;
+  background: #000;
   color: var(--ink);
   font-family: Georgia, "Times New Roman", serif;
   text-align: center;
 }
 
+/* The universe. Content floats above it; the canvas handles the rest. */
+.fullScreen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: -1;
+}
+
+.fullScreen canvas { display: block; width: 100%; height: 100%; }
+
 #app {
+  margin: auto; /* centers vertically and horizontally, degrades kindly when content is tall */
+  width: 100%;
   max-width: 40rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+  padding: 2rem 1.25rem;
 }
 
 h1 {
-  font-size: clamp(2.2rem, 8vw, 3.6rem);
-  font-weight: normal;
-  letter-spacing: 0.04em;
-  color: var(--gold-bright);
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-  margin: 1rem 0 1.5rem;
+  font-family: var(--cursive);
+  font-weight: 400;
+  font-size: clamp(4rem, 14vw, 6.5rem);
+  line-height: 1;
+  color: var(--title);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+  margin: 0.5rem 0 1.25rem;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 5vw, 2.1rem);
-  font-weight: normal;
-  color: var(--gold-bright);
-  margin: 0.5rem 0 1rem;
+  font-family: var(--cursive);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 10vw, 4rem);
+  line-height: 1.05;
+  color: var(--title);
+  margin: 0.25rem 0 1rem;
 }
 
-/* Engraved brass plaques, as is museum law. */
+/* Engraved plaques, hovering politely in space. */
 .plaque {
   background: linear-gradient(160deg, var(--plaque), #e2d7bb);
   color: var(--plaque-ink);
   border: 1px solid #b9a869;
   border-radius: 6px;
-  box-shadow: inset 0 0 0 3px rgba(185, 168, 105, 0.35), 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 3px rgba(185, 168, 105, 0.35), 0 6px 24px rgba(0, 0, 0, 0.7);
   padding: 1.25rem 1.5rem;
   margin: 0 auto 1.5rem;
   max-width: 34rem;
@@ -69,7 +102,7 @@ h2 {
   width: min(92vw, 460px);
   aspect-ratio: 420 / 370;
   margin: 0 auto 1.25rem;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.8));
 }
 
 .frame-overlay {
@@ -92,11 +125,29 @@ h2 {
   background: #d8d2c2;
 }
 
+/* The 2013 entrance: specimens twirl in from the void. */
+.feces-animation {
+  animation: feces-animation 2.5s ease-in-out 0.2s both;
+}
+
+@keyframes feces-animation {
+  0% {
+    transform-origin: center;
+    transform: rotate(-300deg) scale(0);
+    opacity: 0.2;
+  }
+  100% {
+    transform-origin: center;
+    transform: none;
+    opacity: 1;
+  }
+}
+
 .btn {
   font-family: inherit;
   font-size: 1.05rem;
   color: var(--ink);
-  background: transparent;
+  background: rgba(0, 0, 0, 0.55);
   border: 1px solid var(--gold);
   border-radius: 4px;
   padding: 0.6rem 1.4rem;
@@ -105,7 +156,7 @@ h2 {
   transition: background 0.15s, color 0.15s, transform 0.05s;
 }
 
-.btn:hover, .btn:focus-visible { background: rgba(201, 162, 39, 0.18); }
+.btn:hover, .btn:focus-visible { background: rgba(201, 162, 39, 0.25); }
 .btn:active { transform: translateY(1px); }
 
 .btn.primary {
@@ -135,6 +186,7 @@ h2 {
   line-height: 1.5;
   max-width: 32rem;
   margin: 0 auto 0.5rem;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
 }
 
 .verdict .fun-fact {
@@ -167,28 +219,31 @@ h2 {
 .home-actions { margin: 1rem 0; }
 
 .colophon {
-  margin-top: 3rem;
+  margin-top: 2.5rem;
   font-size: 0.9rem;
   color: rgba(239, 233, 216, 0.65);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
 }
 
 .colophon a { color: var(--gold-bright); }
 
-/* Fade-ins, in loving memory of the 2013 original. */
-.fade-in { opacity: 0; animation: fadeIn 0.9s ease forwards; }
-.fade-in.fast { animation-delay: 0.1s; }
-.fade-in.medium { animation-delay: 0.5s; }
-.fade-in.slow { animation-delay: 1s; }
-.fade-in.slowest { animation-delay: 1.6s; }
-
-/* The lobby gets the full ceremony; mid-game screens stay brisk. */
-.question .fade-in, .results .fade-in { animation-duration: 0.4s; }
-.question .fade-in.fast, .results .fade-in.fast { animation-delay: 0s; }
-.question .fade-in.medium, .results .fade-in.medium { animation-delay: 0.1s; }
-.question .fade-in.slow, .results .fade-in.slow { animation-delay: 0.2s; }
+/* Fade-ins. The lobby gets the full 2013 ceremony while the stars flow. */
+.fade-in { opacity: 0; animation: fadeIn 1s ease-in forwards; }
+.fade-in.fast { animation-delay: 0.5s; }
+.fade-in.medium { animation-delay: 1.5s; }
+.fade-in.slow { animation-delay: 2.5s; }
+.fade-in.slowest { animation-delay: 3.5s; }
 
 @keyframes fadeIn { to { opacity: 1; } }
 
+/* Mid-game the ceremony belongs to the twirling frame; everything else stays brisk. */
+.question .fade-in, .results .fade-in { animation-duration: 0.5s; }
+.question .fade-in.fast { animation-delay: 0s; }
+.question .fade-in.slow { animation-delay: 1.1s; }
+.results .fade-in.fast { animation-delay: 0.2s; }
+.results .fade-in.medium { animation-delay: 0.8s; }
+.results .fade-in.slow { animation-delay: 1.4s; }
+
 @media (prefers-reduced-motion: reduce) {
-  .fade-in { animation: none; opacity: 1; }
+  .fade-in, .feces-animation { animation: none; opacity: 1; }
 }

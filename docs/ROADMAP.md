@@ -3,7 +3,7 @@
 Where the museum goes from here. Versions follow SemVer; each milestone below is a MINOR
 release with its own PRs, tests, and CHANGELOG entry. Order may shift; silliness will not.
 
-## v0.1.0 — The relaunch *(this release)*
+## v0.1.0 — The relaunch *(shipped)*
 
 - ✅ Modern dependency-free static site on GitHub Pages: the randomized
   identify-the-species game.
@@ -13,11 +13,16 @@ release with its own PRs, tests, and CHANGELOG entry. Order may shift; silliness
 - ✅ Portka standard: enforced SemVer sync, tests, CI, branch-per-change workflow.
 - ✅ Manual specimen intake via a GitHub issue form.
 
-## v0.2.0 — Field submissions (the AI-screened pipeline)
+## v0.2.0 — The heritage restoration *(shipped)*
+
+- ✅ The 2013 starfield, twirling gilded frame, Tangerine cursive, and full-screen black
+  void restored to the modern site.
+
+## v0.3.0 — Field submissions (the AI-screened pipeline)
 
 *Tracking issue: [#1](https://github.com/cportka/feces-of-the-species/issues/1). The `specimen`
 intake label exists as of v0.1; the pipeline labels (`ai:pass`, `ai:flagged`, `approved`,
-`declined`) must be created with the v0.2 Actions — GitHub silently drops labels that don't
+`declined`) must be created with the v0.3 Actions — GitHub silently drops labels that don't
 exist in the repo.*
 
 Visitors who find feces in the wild donate a photograph and their best identification. The
@@ -50,11 +55,11 @@ infrastructure — no backend to run, no uploads endpoint to secure:
 4. **Provenance.** Every dataset image traces back to its submission issue via the manifest
    `credit` field — the collection stays auditable as it grows.
 
-Also in v0.2: a `/submit` page on the site that explains the process and deep-links the issue
+Also in this milestone: a `/submit` page on the site that explains the process and deep-links the issue
 form (a native upload form needs a backend; the issue form gets us a working pipeline with
 zero infrastructure).
 
-## v0.3.0 — The leaderboard
+## v0.4.0 — The leaderboard
 
 Static hosting makes a shared leaderboard the first feature that genuinely needs state.
 Planned approach:
