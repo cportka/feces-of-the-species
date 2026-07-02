@@ -6,16 +6,16 @@ asked, so our back-and-forth stays on the code — not on process.
 
 For each change you make:
 
-1. **Update `main` first.** Begin by switching to `main` and pulling the latest. A previous
+1. **Update `master` first.** Begin by switching to `master` (this repo's default branch) and pulling the latest. A previous
    change's branch being gone is the user's confirmation that they saw it (see step 5).
 2. **Branch for everything.** Every fix, update, or change goes on a new branch — never commit to
-   `main` directly.
+   `master` directly.
 3. **Tests + CI, then a PR.** Update the relevant tests, keep CI running them, and open a pull
    request. If the repo has no CI yet, add a basic workflow that runs the test suite.
 4. **Green, then merge.** Wait until every check passes, then merge the PR automatically. Never
    merge on red.
 5. **Hand back a short PR link.** Give the user a short link to the merged PR as confirmation. They
-   delete the branch when satisfied — which you pick up next time you update `main` (step 1).
+   delete the branch when satisfied — which you pick up next time you update `master` (step 1).
 
 ## Versioning — SemVer (enforced)
 

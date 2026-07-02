@@ -5,6 +5,17 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.1.1] - 2026-07-02
+
+### Added
+- `assets/social-preview.png` — a 1280×640 social card (the lizard specimen, penny for scale,
+  in the gilded frame), wired up as OpenGraph/Twitter link-preview metadata in `index.html`
+  along with a canonical URL. Also suitable for the repository's Settings → Social preview.
+
+### Changed
+- `.claude/CLAUDE.md` workflow wording now names `master` (this repo's default branch)
+  instead of the generic `main`.
+
 ## [0.1.0] - 2026-07-02
 
 The relaunch. Twelve years after the museum first opened its doors, the exhibit is rebuilt on
