@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "species": [
+    {
+      "id": "cow",
+      "commonName": "Cow",
+      "scientificName": "Bos taurus",
+      "funFact": "A single cow pat can host over a thousand insect larvae. It is less a dropping than a condominium."
+    },
+    {
+      "id": "elephant",
+      "commonName": "Elephant",
+      "scientificName": "Loxodonta africana",
+      "funFact": "Elephants digest only about 40% of what they eat — which is fantastic news for dung beetles and terrible news for whoever follows the parade."
+    },
+    {
+      "id": "human",
+      "commonName": "Human",
+      "scientificName": "Homo sapiens",
+      "funFact": "The only species in this museum that is embarrassed to be here."
+    },
+    {
+      "id": "lizard",
+      "commonName": "Lizard",
+      "scientificName": "Lacertilia (suborder)",
+      "funFact": "That white cap is not frosting — reptiles excrete solid urates, so it is, scientifically speaking, solid pee."
+    },
+    {
+      "id": "roach",
+      "commonName": "Cockroach",
+      "scientificName": "Blattodea (order)",
+      "funFact": "Roach droppings look exactly like coffee grounds. We are so sorry about your coffee."
+    }
+  ],
+  "images": [
+    {
+      "id": "cow-001",
+      "species": "cow",
+      "file": "dataset/cow/cow-001.jpg",
+      "credit": "Original 2013 collection",
+      "addedIn": "0.1.0",
+      "status": "approved"
+    },
+    {
+      "id": "elephant-001",
+      "species": "elephant",
+      "file": "dataset/elephant/elephant-001.jpg",
+      "credit": "Original 2013 collection",
+      "addedIn": "0.1.0",
+      "status": "approved"
+    },
+    {
+      "id": "human-001",
+      "species": "human",
+      "file": "dataset/human/human-001.jpg",
+      "credit": "Original 2013 collection",
+      "addedIn": "0.1.0",
+      "status": "approved"
+    },
+    {
+      "id": "lizard-001",
+      "species": "lizard",
+      "file": "dataset/lizard/lizard-001.jpg",
+      "credit": "Original 2013 collection",
+      "addedIn": "0.1.0",
+      "status": "approved"
+    },
+    {
+      "id": "roach-001",
+      "species": "roach",
+      "file": "dataset/roach/roach-001.jpg",
+      "credit": "Original 2013 collection",
+      "addedIn": "0.1.0",
+      "status": "approved"
+    }
+  ]
+}

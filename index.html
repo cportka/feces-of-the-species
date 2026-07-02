@@ -1,31 +1,25 @@
 <!doctype html>
-<html lang="en" ng-app="feces-of-the-species">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Feces of the Species</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link type="text/css" href="css/animations.css" rel="stylesheet">
-    <link type="text/css" href="css/style.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feces of the Species</title>
+  <meta name="description" content="Can you name every species of the feces? A very serious museum of droppings, and a game.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A9%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <main class="view" ng-view>
-        <!-- AngularJS partials to be loaded here -->
-    </main>
-    <div class="fullScreen" id="fullScreen">
-        <canvas id="canvas2d"></canvas>
-    </div>
+  <main id="app" aria-live="polite">
+    <noscript>
+      <section class="plaque">
+        <h2>The museum requires JavaScript.</h2>
+        <p>The specimens refuse to be identified without it.</p>
+      </section>
+    </noscript>
+  </main>
+  <script type="module" src="js/app.js"></script>
 </body>
 
-<script src="http://code.jquery.com/jquery.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-animate.min.js"></script>
-<script src="js/stars.js"></script>
-<script src="js/app.js"></script>
-
 </html>
-

@@ -1,0 +1,47 @@
+name: "💩 Specimen submission"
+description: Donate a photograph of feces you found in the wild to the museum's collection.
+title: "[Specimen] "
+labels: ["specimen"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your service. Attach a clear photograph, tell us whose it is (your best
+        guess), and the curator — assisted, soon, by an AI screening pipeline — will review it
+        for the permanent collection. Approved specimens enter the random rotation with your
+        credit in the manifest.
+  - type: input
+    id: species
+    attributes:
+      label: Claimed species
+      description: Who did this? Common name is fine; scientific name earns respect.
+      placeholder: e.g. Moose (Alces alces)
+    validations:
+      required: true
+  - type: textarea
+    id: photograph
+    attributes:
+      label: The photograph
+      description: |
+        Drag and drop your image here — any common type works (png, jpg, gif, webp, heic).
+        One specimen per submission. In focus, decent light, specimen filling the frame.
+      placeholder: Drop the evidence here.
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Found where? (optional)
+      description: Habitat helps identification. Be as vague as your privacy prefers.
+      placeholder: e.g. a trail in the Cascades; my kitchen, upsettingly
+  - type: checkboxes
+    id: affirmations
+    attributes:
+      label: Curatorial affirmations
+      options:
+        - label: I took this photograph (or have the right to donate it) and license it under the repository's MIT license.
+          required: true
+        - label: To the best of my knowledge, this is genuinely feces.
+          required: true
+        - label: I understand the museum may politely decline my specimen.
+          required: true

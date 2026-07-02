@@ -1,0 +1,20 @@
+{
+  "name": "feces-of-the-species",
+  "version": "0.1.0",
+  "description": "Can you name every species of the feces? A very serious museum of droppings, and a game.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://fecesofthespecies.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cportka/feces-of-the-species.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node --test tests/*.test.mjs && bash tests/run-tests.sh"
+  }
+}
