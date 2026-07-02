@@ -1,0 +1,174 @@
+@import url(http://fonts.googleapis.com/css?family=Tangerine);
+@import url(http://fonts.googleapis.com/css?family=Dancing+Script);
+ html,
+body,
+main,
+container {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+}
+.img-responsive {
+    display: inline;
+}
+.middle-box {
+    display: table;
+    height: 100%;
+    width: 100%
+}
+.middle-box img {
+    margin-top: -10px;
+}
+.vertical-align-box {
+    vertical-align: middle;
+    display: table-cell;
+    height: 100%;
+    width: 100%
+}
+h1 {
+    color: sandybrown;
+    font-family: "Tangerine";
+    font-size: 80px;
+}
+h2 {
+    color: #AC7955;
+    font-family: "Helvetica";
+    font-size: 18px;
+}
+h3 {
+    color: sandybrown;
+    font-family: "Tangerine";
+    font-size: 60px;
+}
+.fullScreen {
+    position: absolute;
+    background: #000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.well {
+    background-image: linear-gradient(to bottom, #e8e8e8 0, #f5f5f5 100%);
+    background-repeat: repeat-x;
+    border-color: #dcdcdc;
+    position: relative;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    /*
+    left: 30%;
+    width: 40%;
+    */
+}
+.input-group {
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+    margin-top: 10px;
+}
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@-moz-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.fade-in {
+    opacity: 0;
+    /* make things invisible upon start */
+    -webkit-animation: fadeIn ease-in 1;
+    /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+    -moz-animation: fadeIn ease-in 1;
+    animation: fadeIn ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+    -moz-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    animation-duration: 1s;
+}
+.fade-in.fast {
+    -webkit-animation-delay: 0.7s;
+    -moz-animation-delay: 0.7s;
+    animation-delay: 0.7s;
+}
+.fade-in.medium {
+    -webkit-animation-delay: 2.0s;
+    -moz-animation-delay: 2.0s;
+    animation-delay: 2.0s;
+}
+.fade-in.slow {
+    -webkit-animation-delay: 3.0s;
+    -moz-animation-delay: 3.0s;
+    animation-delay: 3.0s;
+}
+.fade-in.slowest {
+    -webkit-animation-delay: 5.0s;
+    -moz-animation-delay: 5.0s;
+    animation-delay: 5.0s;
+}
+.feces-animation {
+    animation-delay: 2.5s;
+    animation-duration: 2.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+    animation-name: feces-animation;
+    -webkit-animation-delay: 2.5s;
+    -webkit-animation-duration: 2.5s;
+    -webkit-animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-name: feces-animation;
+    visibility: visible !important;
+}
+@keyframes feces-animation {
+    0% {
+        transform-origin: center;
+        -webkit-transform-origin: center;
+        transform: rotate(-300deg) scale(0);
+        -webkit-transform: rotate(-300deg) scale(0);
+        opacity: 0.2;
+    }
+    100% {
+        transform-origin: center;
+        -webkit-transform-origin: center;
+        transform: none;
+        -webkit-transform: none;
+        opacity: 1;
+    }
+}
+@-webkit-keyframes feces-animation {
+    0% {
+        transform-origin: center;
+        -webkit-transform-origin: center;
+        transform: rotate(-300deg) scale(0);
+        -webkit-transform: rotate(-300deg) scale(0);
+        opacity: 0.2;
+    }
+    100% {
+        transform-origin: center;
+        -webkit-transform-origin: center;
+        transform: none;
+        -webkit-transform: none;
+        opacity: 1;
+    }
+}
