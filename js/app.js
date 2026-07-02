@@ -1,5 +1,6 @@
 // app.js — screen flow and DOM wiring. All game rules live in game.js.
 import { buildRound, ordinal, rankFor, reaction } from "./game.js";
+import { startStarfield } from "./starfield.js";
 
 const QUESTIONS_PER_ROUND = 5;
 const BEST_SCORE_KEY = "fots-best-score";
@@ -8,6 +9,7 @@ const app = document.getElementById("app");
 let manifest;
 
 async function main() {
+  startStarfield(document.getElementById("fullScreen"));
   try {
     const res = await fetch("data/species.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -94,7 +96,7 @@ function showQuestion() {
   render(`
     <section class="question">
       <h2 class="fade-in fast">Question the ${ordinal(current + 1)}&hellip;</h2>
-      <figure class="framed fade-in medium">
+      <figure class="framed feces-animation">
         <img class="frame-overlay" src="assets/gilded-frame-window.png" alt="" aria-hidden="true">
         <img class="specimen" src="${q.image.file}" alt="An unidentified specimen of feces, hanging in a gilded frame">
       </figure>

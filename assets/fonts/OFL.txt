@@ -1,0 +1,10 @@
+Tangerine (tangerine-400.woff2, tangerine-700.woff2)
+Copyright (c) 2010-2012, Toshi Omagari (tosche.net), with Reserved Font Name "Tangerine".
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The full license text is available with a FAQ at: https://openfontlicense.org
+
+Summary of the OFL v1.1 terms as they apply here: the fonts may be used, studied, modified
+and redistributed freely (including bundled with this website) provided they are not sold by
+themselves, any derivative fonts use a different name, and this copyright/license notice is
+retained with the font files — which is what this file is.
