@@ -96,6 +96,14 @@ h2 {
 
 .plaque p { margin: 0.4rem 0; }
 
+/* On phones, scale the plaque type with the viewport so each engraved line stays one line. */
+@media (max-width: 520px) {
+  .plaque {
+    font-size: clamp(0.8rem, 3.4vw, 1.05rem);
+    padding: 1rem 0.75rem;
+  }
+}
+
 /* The gilded frame: photo sits in the punched-out window of the overlay PNG. */
 .framed {
   position: relative;
