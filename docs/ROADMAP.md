@@ -1,7 +1,8 @@
 # Roadmap
 
-Where the museum goes from here. Versions follow SemVer; each milestone below is a MINOR
-release with its own PRs, tests, and CHANGELOG entry. Order may shift; silliness will not.
+Where the museum goes from here. Versions follow SemVer; each milestone ships as a MINOR
+release with its own PRs, tests, and CHANGELOG entry (numbers are assigned when they ship —
+features kept arriving early). Order may shift; silliness will not.
 
 ## v0.1.0 — The relaunch *(shipped)*
 
@@ -18,10 +19,16 @@ release with its own PRs, tests, and CHANGELOG entry. Order may shift; silliness
 - ✅ The 2013 starfield, twirling gilded frame, Tangerine cursive, and full-screen black
   void restored to the modern site.
 
-## v0.3.0 — Field submissions (the AI-screened pipeline)
+## v0.3.0 — The curator's cut *(shipped)*
+
+- ✅ Six choices per question in a museum-grid, drawn from curated per-species `confusables`
+  plus a pool of decoy species — guesses are hard now.
+- ✅ All museum copy and game tuning consolidated into `data/species.json`, guarded by tests.
+
+## Next — Field submissions (the AI-screened pipeline)
 
 *The `specimen` intake label exists as of v0.1; the pipeline labels (`ai:pass`, `ai:flagged`,
-`approved`, `declined`) must be created alongside the v0.3 Actions — GitHub silently drops
+`approved`, `declined`) must be created alongside the submissions Actions — GitHub silently drops
 labels that don't exist in the repo.*
 
 Visitors who find feces in the wild donate a photograph and their best identification. The
@@ -68,7 +75,7 @@ Work items:
 - [ ] `/submit` page on the site.
 - [ ] Tests: manifest-entry generation, image normalization, label-gating logic.
 
-## v0.4.0 — The leaderboard
+## Later — The leaderboard
 
 Static hosting makes a shared leaderboard the first feature that genuinely needs state.
 Planned approach:

@@ -1,12 +1,13 @@
-// app.js — screen flow and DOM wiring. All game rules live in game.js.
-import { buildRound, ordinal, rankFor, reaction } from "./game.js";
+// app.js — screen flow and DOM wiring. All game rules live in game.js; every word of
+// museum copy (and the game tuning) lives in data/species.json for easy editing.
+import { buildRound, ordinal, rankFor, reaction, fill } from "./game.js";
 import { startStarfield } from "./starfield.js";
 
-const QUESTIONS_PER_ROUND = 5;
 const BEST_SCORE_KEY = "fots-best-score";
 
 const app = document.getElementById("app");
 let manifest;
+let TXT;
 
 async function main() {
   startStarfield(document.getElementById("fullScreen"));
@@ -14,6 +15,7 @@ async function main() {
     const res = await fetch("data/species.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     manifest = await res.json();
+    TXT = manifest.text;
   } catch (err) {
     app.innerHTML = `<section class="plaque"><h2>The museum is closed.</h2>
       <p>The specimen catalog could not be loaded (${escapeHtml(String(err))}).
@@ -25,6 +27,10 @@ async function main() {
 
 function speciesById(id) {
   return manifest.species.find((s) => s.id === id);
+}
+
+function roundLength() {
+  return manifest.game?.questionsPerRound ?? 5;
 }
 
 function bestScore() {
@@ -52,6 +58,7 @@ function recordScore(score) {
 
 function showHome() {
   const best = bestScore();
+  const exhibits = manifest.images.length;
   render(`
     <section class="hero">
       <h1 aria-label="Feces of the Species">
@@ -59,22 +66,22 @@ function showHome() {
         <span class="fade-in medium">&nbsp;of the Species</span>
       </h1>
       <div class="plaque fade-in slow">
-        <p>Welcome, welcome, and welcome again.</p>
-        <p>Here we test the breadth of your fecal facts.</p>
-        <p>Can you name every species of the feces?</p>
+        ${TXT.home.welcome.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
       </div>
       <div class="fade-in slowest home-actions">
-        <button class="btn primary" data-action="start">Continue&hellip;</button>
-        ${best !== null ? `<p class="best-score">Personal best: ${best} / ${QUESTIONS_PER_ROUND}</p>` : ""}
+        <button class="btn primary" data-action="start">${escapeHtml(TXT.home.start)}</button>
+        ${best !== null
+          ? `<p class="best-score">${escapeHtml(fill(TXT.home.personalBest, { best, total: roundLength() }))}</p>`
+          : ""}
       </div>
       <footer class="fade-in slowest colophon">
         <p>
-          ${manifest.images.length} specimens &middot; ${manifest.species.length} species &middot;
-          <a href="archive/v1/index.html">visit the 2013 wing</a> &middot;
-          <a href="https://github.com/cportka/feces-of-the-species/blob/master/docs/ROADMAP.md">roadmap</a>
+          ${escapeHtml(fill(TXT.home.statsLine, { imageCount: exhibits, speciesCount: manifest.species.filter((s) => !s.decoy).length }))} &middot;
+          <a href="archive/v1/index.html">${escapeHtml(TXT.home.archiveLink)}</a> &middot;
+          <a href="https://github.com/cportka/feces-of-the-species/blob/master/docs/ROADMAP.md">${escapeHtml(TXT.home.roadmapLink)}</a>
         </p>
-        <p>Found some in the wild? Field submissions open in v0.2 &mdash;
-          <a href="https://github.com/cportka/feces-of-the-species/issues/new?template=specimen-submission.yml">donate a specimen</a>.
+        <p>${escapeHtml(TXT.home.submitLine)}
+          <a href="https://github.com/cportka/feces-of-the-species/issues/new?template=specimen-submission.yml">${escapeHtml(TXT.home.submitLink)}</a>.
         </p>
       </footer>
     </section>
@@ -85,7 +92,7 @@ function showHome() {
 let round, current, score;
 
 function startRound() {
-  round = buildRound(manifest, { questions: QUESTIONS_PER_ROUND });
+  round = buildRound(manifest);
   current = 0;
   score = 0;
   showQuestion();
@@ -95,12 +102,12 @@ function showQuestion() {
   const q = round[current];
   render(`
     <section class="question">
-      <h2 class="fade-in fast">Question the ${ordinal(current + 1)}&hellip;</h2>
+      <h2 class="fade-in fast">${escapeHtml(fill(TXT.question.heading, { ordinal: ordinal(current + 1) }))}</h2>
       <figure class="framed feces-animation">
         <img class="frame-overlay" src="assets/gilded-frame-window.png" alt="" aria-hidden="true">
-        <img class="specimen" src="${q.image.file}" alt="An unidentified specimen of feces, hanging in a gilded frame">
+        <img class="specimen" src="${q.image.file}" alt="${escapeHtml(TXT.question.imageAlt)}">
       </figure>
-      <div class="choices fade-in slow" role="group" aria-label="Whose feces is this?">
+      <div class="choices fade-in slow" role="group" aria-label="${escapeHtml(TXT.question.choicesLabel)}">
         ${q.options
           .map(
             (id) => `<button class="btn choice" data-species="${id}">${escapeHtml(speciesById(id).commonName)}</button>`,
@@ -108,12 +115,16 @@ function showQuestion() {
           .join("")}
       </div>
       <p class="verdict" role="status" aria-live="polite"></p>
-      <p class="progress">Specimen ${current + 1} of ${round.length} &middot; Score ${score}</p>
+      <p class="progress">${escapeHtml(progressLine(q))}</p>
     </section>
   `);
   for (const btn of app.querySelectorAll(".choice")) {
     btn.addEventListener("click", () => answer(btn));
   }
+}
+
+function progressLine() {
+  return fill(TXT.question.progress, { n: current + 1, total: round.length, score });
 }
 
 function answer(btn) {
@@ -130,17 +141,20 @@ function answer(btn) {
 
   const sp = speciesById(q.answer);
   const verdict = app.querySelector(".verdict");
+  const revealed = fill(TXT.question.reveal, {
+    commonName: sp.commonName,
+    scientificName: sp.scientificName,
+  });
   verdict.innerHTML = `
-    <strong>${correct ? "" : `It was <em>${escapeHtml(sp.commonName)}</em> (${escapeHtml(sp.scientificName)}). `}</strong>
-    ${escapeHtml(reaction(correct, current))}
-    <span class="fun-fact">${escapeHtml(sp.funFact)}</span>
+    <strong>${correct ? "" : escapeHtml(revealed) + " "}</strong>
+    ${escapeHtml(reaction(correct, current, TXT))}
+    <span class="fun-fact">${escapeHtml(sp.funFact ?? "")}</span>
   `;
-  app.querySelector(".progress").textContent =
-    `Specimen ${current + 1} of ${round.length} · Score ${score}`;
+  app.querySelector(".progress").textContent = progressLine();
 
   const next = document.createElement("button");
   next.className = "btn primary next";
-  next.textContent = current + 1 < round.length ? "Next specimen…" : "To the results…";
+  next.textContent = current + 1 < round.length ? TXT.question.next : TXT.question.toResults;
   next.addEventListener("click", () => {
     current++;
     if (current < round.length) showQuestion();
@@ -152,21 +166,22 @@ function answer(btn) {
 
 function showResults() {
   recordScore(score);
-  const rank = rankFor(score, round.length);
+  const rank = rankFor(score, round.length, TXT.ranks);
   const best = bestScore();
   render(`
     <section class="results">
-      <h2 class="fade-in fast">Congratulations</h2>
+      <h2 class="fade-in fast">${escapeHtml(TXT.results.heading)}</h2>
       <div class="plaque fade-in medium">
-        <p class="score-line">You scored <strong>${score}</strong> out of ${round.length} correct.
-        You took the test, yes you did.</p>
-        <p class="rank">The museum hereby names you<br><strong>${rank.title}</strong></p>
-        <p class="remark">${rank.remark}</p>
-        ${best !== null ? `<p class="best-score">Personal best: ${best} / ${round.length}</p>` : ""}
+        <p class="score-line">${escapeHtml(fill(TXT.results.scoreLine, { score, total: round.length }))}</p>
+        <p class="rank">${escapeHtml(TXT.results.rankIntro)}<br><strong>${escapeHtml(rank.title)}</strong></p>
+        <p class="remark">${escapeHtml(rank.remark)}</p>
+        ${best !== null
+          ? `<p class="best-score">${escapeHtml(fill(TXT.home.personalBest, { best, total: round.length }))}</p>`
+          : ""}
       </div>
       <div class="fade-in slow home-actions">
-        <button class="btn primary" data-action="again">Another round&hellip;</button>
-        <button class="btn" data-action="home">Back to the lobby</button>
+        <button class="btn primary" data-action="again">${escapeHtml(TXT.results.again)}</button>
+        <button class="btn" data-action="home">${escapeHtml(TXT.results.home)}</button>
       </div>
     </section>
   `);
@@ -180,7 +195,7 @@ function render(html) {
 }
 
 function escapeHtml(text) {
-  return text.replace(/[&<>"']/g, (c) => ({
+  return String(text).replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[c]);
 }

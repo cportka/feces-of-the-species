@@ -1,37 +1,123 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+
+  "game": {
+    "questionsPerRound": 5,
+    "choicesPerQuestion": 6
+  },
+
+  "text": {
+    "home": {
+      "welcome": [
+        "Welcome, welcome, and welcome again.",
+        "Here we test the breadth of your fecal facts.",
+        "Can you name every species of the feces?"
+      ],
+      "start": "Continue…",
+      "statsLine": "{imageCount} specimens · {speciesCount} species",
+      "archiveLink": "visit the 2013 wing",
+      "roadmapLink": "roadmap",
+      "submitLine": "Found some in the wild? Field submissions are coming —",
+      "submitLink": "donate a specimen",
+      "personalBest": "Personal best: {best} / {total}"
+    },
+    "question": {
+      "heading": "Question the {ordinal}…",
+      "imageAlt": "An unidentified specimen of feces, hanging in a gilded frame",
+      "choicesLabel": "Whose feces is this?",
+      "reveal": "It was {commonName} ({scientificName}).",
+      "progress": "Specimen {n} of {total} · Score {score}",
+      "next": "Next specimen…",
+      "toResults": "To the results…"
+    },
+    "results": {
+      "heading": "Congratulations",
+      "scoreLine": "You scored {score} out of {total} correct. You took the test, yes you did.",
+      "rankIntro": "The museum hereby names you",
+      "again": "Another round…",
+      "home": "Back to the lobby"
+    },
+    "praise": [
+      "Correct! Nature is disgusting and you are its scholar.",
+      "Right you are. The specimen is honored.",
+      "Correct. Somewhere, a park ranger sheds a proud tear.",
+      "Yes! You have a gift. Please wash it."
+    ],
+    "condolence": [
+      "Alas, no. The droppings remain anonymous.",
+      "Incorrect — but a very confident guess.",
+      "Not quite. The specimen is mildly offended.",
+      "No. But in fairness, it all looks like that."
+    ],
+    "ranks": [
+      { "title": "Fecal Fraud", "remark": "Perhaps the droppings identified you." },
+      { "title": "Novice Nugget Noticer", "remark": "You have noticed a nugget. It is a start." },
+      { "title": "Dropping Dabbler", "remark": "You dabble. The droppings respect the effort." },
+      { "title": "Scat Scholar", "remark": "Your thesis, 'On Pats', is coming along nicely." },
+      { "title": "Dung Docent", "remark": "Please keep your tour group behind the velvet rope." },
+      { "title": "Distinguished Doctor of Dungology", "remark": "The museum board bows before you." }
+    ]
+  },
+
   "species": [
     {
       "id": "cow",
       "commonName": "Cow",
       "scientificName": "Bos taurus",
-      "funFact": "A single cow pat can host over a thousand insect larvae. It is less a dropping than a condominium."
+      "funFact": "A single cow pat can host over a thousand insect larvae. It is less a dropping than a condominium.",
+      "confusables": ["bison", "horse", "moose", "bear", "pig", "elephant"]
     },
     {
       "id": "elephant",
       "commonName": "Elephant",
       "scientificName": "Loxodonta africana",
-      "funFact": "Elephants digest only about 40% of what they eat — which is fantastic news for dung beetles and terrible news for whoever follows the parade."
+      "funFact": "Elephants digest only about 40% of what they eat — which is fantastic news for dung beetles and terrible news for whoever follows the parade.",
+      "confusables": ["rhinoceros", "hippopotamus", "horse", "bison", "moose", "cow"]
     },
     {
       "id": "human",
       "commonName": "Human",
       "scientificName": "Homo sapiens",
-      "funFact": "The only species in this museum that is embarrassed to be here."
+      "funFact": "The only species in this museum that is embarrassed to be here.",
+      "confusables": ["dog", "chimpanzee", "bear", "pig", "raccoon", "cat"]
     },
     {
       "id": "lizard",
       "commonName": "Lizard",
       "scientificName": "Lacertilia (suborder)",
-      "funFact": "That white cap is not frosting — reptiles excrete solid urates, so it is, scientifically speaking, solid pee."
+      "funFact": "That white cap is not frosting — reptiles excrete solid urates, so it is, scientifically speaking, solid pee.",
+      "confusables": ["gecko", "snake", "iguana", "mouse", "rat", "bat"]
     },
     {
       "id": "roach",
       "commonName": "Cockroach",
       "scientificName": "Blattodea (order)",
-      "funFact": "Roach droppings look exactly like coffee grounds. We are so sorry about your coffee."
-    }
+      "funFact": "Roach droppings look exactly like coffee grounds. We are so sorry about your coffee.",
+      "confusables": ["mouse", "rat", "termite", "bat", "cricket", "beetle"]
+    },
+
+    { "id": "bison", "commonName": "Bison", "scientificName": "Bison bison", "decoy": true },
+    { "id": "horse", "commonName": "Horse", "scientificName": "Equus ferus caballus", "decoy": true },
+    { "id": "moose", "commonName": "Moose", "scientificName": "Alces alces", "decoy": true },
+    { "id": "bear", "commonName": "Bear", "scientificName": "Ursus americanus", "decoy": true },
+    { "id": "pig", "commonName": "Pig", "scientificName": "Sus domesticus", "decoy": true },
+    { "id": "rhinoceros", "commonName": "Rhinoceros", "scientificName": "Ceratotherium simum", "decoy": true },
+    { "id": "hippopotamus", "commonName": "Hippopotamus", "scientificName": "Hippopotamus amphibius", "decoy": true },
+    { "id": "dog", "commonName": "Dog", "scientificName": "Canis familiaris", "decoy": true },
+    { "id": "cat", "commonName": "Cat", "scientificName": "Felis catus", "decoy": true },
+    { "id": "chimpanzee", "commonName": "Chimpanzee", "scientificName": "Pan troglodytes", "decoy": true },
+    { "id": "raccoon", "commonName": "Raccoon", "scientificName": "Procyon lotor", "decoy": true },
+    { "id": "gecko", "commonName": "Gecko", "scientificName": "Gekkonidae (family)", "decoy": true },
+    { "id": "snake", "commonName": "Snake", "scientificName": "Serpentes (suborder)", "decoy": true },
+    { "id": "iguana", "commonName": "Iguana", "scientificName": "Iguana iguana", "decoy": true },
+    { "id": "mouse", "commonName": "Mouse", "scientificName": "Mus musculus", "decoy": true },
+    { "id": "rat", "commonName": "Rat", "scientificName": "Rattus norvegicus", "decoy": true },
+    { "id": "bat", "commonName": "Bat", "scientificName": "Chiroptera (order)", "decoy": true },
+    { "id": "termite", "commonName": "Termite", "scientificName": "Isoptera (infraorder)", "decoy": true },
+    { "id": "cricket", "commonName": "Cricket", "scientificName": "Gryllidae (family)", "decoy": true },
+    { "id": "beetle", "commonName": "Beetle", "scientificName": "Coleoptera (order)", "decoy": true }
   ],
+
   "images": [
     {
       "id": "cow-001",

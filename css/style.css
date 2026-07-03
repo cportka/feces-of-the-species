@@ -167,15 +167,20 @@ h2 {
 
 .btn.primary:hover, .btn.primary:focus-visible { background: var(--gold-bright); }
 
+/* Six options: two rows of three, collapsing to two columns on narrow screens. */
 .choices {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem;
-  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  max-width: 34rem;
+  margin: 0 auto 1rem;
 }
 
-.choice { min-width: 9rem; }
+@media (max-width: 480px) {
+  .choices { grid-template-columns: repeat(2, 1fr); }
+}
+
+.choice { min-width: 0; margin: 0; }
 .choice:disabled { cursor: default; opacity: 0.75; }
 .choice.is-answer { background: var(--right); border-color: var(--right); color: #fff; opacity: 1; }
 .choice.is-wrong { background: var(--wrong); border-color: var(--wrong); color: #fff; opacity: 1; }
