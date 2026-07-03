@@ -81,10 +81,12 @@ export function stripPngMetadata(bytes) {
   for (let k = 0; k < 8; k++) out.push(bytes[k]); // signature
   let i = 8;
   while (i + 8 <= n) {
-    const len = (bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3];
+    // Chunk length is an unsigned 32-bit int. Read it unsigned (`>>> 0`) so a crafted length with
+    // the high bit set can't become negative and walk the pointer backward into an infinite loop.
+    const len = ((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]) >>> 0;
     const type = String.fromCharCode(bytes[i + 4], bytes[i + 5], bytes[i + 6], bytes[i + 7]);
     const chunkEnd = i + 12 + len; // length(4) + type(4) + data(len) + crc(4)
-    if (chunkEnd > n) break; // malformed — stop
+    if (chunkEnd <= i || chunkEnd > n) break; // malformed / overflow — stop
     if (!PNG_STRIP_CHUNKS.has(type)) {
       for (let k = i; k < chunkEnd; k++) out.push(bytes[k]);
     }
@@ -94,15 +96,73 @@ export function stripPngMetadata(bytes) {
   return Uint8Array.from(out);
 }
 
+const WEBP_STRIP_CHUNKS = new Set(["EXIF", "XMP "]);
+const VP8X_EXIF_FLAG = 0x08;
+const VP8X_XMP_FLAG = 0x04;
+
+function u32le(bytes, i) {
+  return ((bytes[i]) | (bytes[i + 1] << 8) | (bytes[i + 2] << 16) | (bytes[i + 3] << 24)) >>> 0;
+}
+
+/** True if a WebP carries an EXIF or XMP metadata chunk (used by tests). */
+export function webpHasMetadata(bytes) {
+  if (detectImageType(bytes) !== "webp") return false;
+  let i = 12;
+  const n = bytes.length;
+  while (i + 8 <= n) {
+    const fourcc = String.fromCharCode(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+    const size = u32le(bytes, i + 4);
+    if (WEBP_STRIP_CHUNKS.has(fourcc)) return true;
+    i += 8 + size + (size & 1); // chunks are padded to even length
+  }
+  return false;
+}
+
 /**
- * Strip metadata from a supported image, dispatching on detected type. GIF/WebP pass through
- * unchanged (they rarely carry location data; noted rather than silently claimed clean).
+ * Remove EXIF and XMP metadata chunks from a RIFF/WebP, clearing the matching flag bits in the
+ * VP8X header, and rewrite the RIFF size. Non-metadata chunks (image data, alpha, ICC, animation)
+ * are preserved verbatim.
+ */
+export function stripWebpMetadata(bytes) {
+  const n = bytes.length;
+  const chunks = [];
+  let i = 12;
+  while (i + 8 <= n) {
+    const fourcc = String.fromCharCode(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+    const size = u32le(bytes, i + 4);
+    const end = i + 8 + size + (size & 1);
+    if (end <= i || end > n) break; // malformed — keep what we have
+    if (!WEBP_STRIP_CHUNKS.has(fourcc)) chunks.push({ fourcc, start: i, end });
+    i = end;
+  }
+  const out = [0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50]; // RIFF ???? WEBP
+  for (const c of chunks) {
+    for (let k = c.start; k < c.end; k++) out.push(bytes[k]);
+    if (c.fourcc === "VP8X") {
+      const flagsIndex = out.length - (c.end - c.start) + 8; // first data byte of VP8X
+      out[flagsIndex] &= ~(VP8X_EXIF_FLAG | VP8X_XMP_FLAG);
+    }
+  }
+  const riffSize = out.length - 8;
+  out[4] = riffSize & 0xff;
+  out[5] = (riffSize >> 8) & 0xff;
+  out[6] = (riffSize >> 16) & 0xff;
+  out[7] = (riffSize >> 24) & 0xff;
+  return Uint8Array.from(out);
+}
+
+/**
+ * Strip metadata from a supported image, dispatching on detected type. JPEG, PNG, and WebP are
+ * verified-stripped (stripped: true). GIF (and anything unrecognized) passes through with
+ * stripped: false — the approval Action refuses to commit those rather than risk leaking location
+ * data, since GIF metadata removal isn't implemented yet.
  * @returns {{bytes: Uint8Array, type: string|null, stripped: boolean}}
  */
 export function stripImageMetadata(bytes) {
   const type = detectImageType(bytes);
   if (type === "jpeg") return { bytes: stripJpegMetadata(bytes), type, stripped: true };
   if (type === "png") return { bytes: stripPngMetadata(bytes), type, stripped: true };
+  if (type === "webp") return { bytes: stripWebpMetadata(bytes), type, stripped: true };
   return { bytes, type, stripped: false };
 }
 

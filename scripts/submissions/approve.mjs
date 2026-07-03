@@ -63,9 +63,14 @@ async function main() {
   }
 
   const stripped = stripImageMetadata(bytes);
+  if (!stripped.stripped) {
+    return stop(issue.number,
+      "🗂️ I can only guarantee location-metadata removal on JPEG, PNG, and WebP right now, and this " +
+      "looks like another format. Please re-submit the specimen as a JPEG, PNG, or WebP and re-apply `approved`.");
+  }
   const type = detectImageType(stripped.bytes);
   const ext = extForType(type);
-  if (!ext) return stop(issue.number, "🗂️ The attachment isn't a supported image type (jpeg/png/gif/webp).");
+  if (!ext) return stop(issue.number, "🗂️ The attachment isn't a supported image type (jpeg/png/webp).");
   if (stripped.bytes.length > MAX_APPROVED_BYTES) {
     return stop(issue.number,
       `🗂️ The image is ${(stripped.bytes.length / 1048576).toFixed(1)} MB after cleanup — over the ` +

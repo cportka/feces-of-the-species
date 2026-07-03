@@ -16,9 +16,10 @@ below.
     the claim — and posts an advisory comment plus one label (`ai:pass` / `ai:flagged` /
     `ai:reject-suggested`). The AI only advises; it never approves, rejects, or writes to the dataset.
   - **Approval** (`specimen-approve.yml` + `scripts/submissions/approve.mjs`): adding the `approved`
-    label strips the image's EXIF/location metadata (pure-JS, dependency-free), commits it to
-    `dataset/<species>/` with submitter credit, bumps the PATCH version, and opens a pre-validated
-    pull request that closes the issue.
+    label strips the image's EXIF/XMP/location metadata — pure-JS, dependency-free, for JPEG, PNG,
+    and WebP (GIF is refused rather than committed unstripped) — commits it to `dataset/<species>/`
+    with submitter credit, bumps the PATCH version, and opens a pre-validated pull request that
+    closes the issue.
   - The five pipeline labels (`ai:pass`, `ai:flagged`, `ai:reject-suggested`, `approved`,
     `declined`); the `specimen` intake label already existed.
 - `submit.html` — a starfield "/submit" page explaining the process and deep-linking the issue form;

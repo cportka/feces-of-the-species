@@ -51,7 +51,9 @@ Judge conservatively and honestly; when unsure, say so in the explanation and lo
 export function buildScreeningRequest({ species, imageMediaType, imageBase64 }) {
   return {
     model: SCREENING_MODEL,
-    max_tokens: 2048,
+    // Adaptive thinking shares this budget, so leave ample headroom above the small JSON payload —
+    // a truncated response (stop_reason "max_tokens") would break structured-output parsing.
+    max_tokens: 8000,
     thinking: { type: "adaptive" },
     system: SYSTEM_PROMPT,
     output_config: { format: { type: "json_schema", schema: SCREENING_SCHEMA } },

@@ -52,9 +52,11 @@ or to add the new species first. It never guesses.
 
 ## What's deferred
 
-- **Resolution downscaling.** The pipeline strips metadata (the privacy-critical part, done in
-  dependency-free JS) and rejects images over 2 MB, but it does not re-encode to cap pixel dimensions —
-  that needs an image library. Track it in the roadmap.
+- **Metadata stripping covers JPEG, PNG, and WebP** (EXIF/XMP, done in dependency-free JS). GIF isn't
+  implemented yet, so the approval Action *refuses to commit a GIF* and asks the submitter to re-send
+  it as JPEG/PNG/WebP — it never commits an image whose location metadata it couldn't verify-strip.
+- **Resolution downscaling.** The pipeline strips metadata and rejects images over 2 MB, but it does
+  not re-encode to cap pixel dimensions — that needs an image library. Track it in the roadmap.
 - **End-to-end CI on the generated PR.** Because the PR is opened by the Actions token, GitHub does
   not run the push/PR workflows on it (anti-recursion). The approval Action runs the full test suite
   before opening the PR, so it's validated; re-run CI with a manual push if you want the badge on the PR.

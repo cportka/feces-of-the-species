@@ -16,11 +16,28 @@ import {
   slugify, resolveSpecies, nextImageId, buildImageEntry, addImage, bumpPatch, creditFor,
 } from "../scripts/submissions/manifest-entry.mjs";
 import {
-  detectImageType, jpegHasExif, stripJpegMetadata, stripPngMetadata, stripImageMetadata, extForType,
+  detectImageType, jpegHasExif, stripJpegMetadata, stripPngMetadata, stripWebpMetadata,
+  webpHasMetadata, stripImageMetadata, extForType,
 } from "../scripts/submissions/image-metadata.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const manifest = JSON.parse(readFileSync(join(root, "data/species.json"), "utf8"));
+
+// A fixed fixture manifest for the manifest-entry unit tests. These assert absolute ids
+// (cow-002, ...), so they must NOT read the live data/species.json — the approval pipeline appends
+// to it and re-runs these same tests, which would flip cow-002 -> cow-003 and redden CI on trunk.
+const FIXTURE = {
+  species: [
+    { id: "cow", commonName: "Cow", scientificName: "Bos taurus", funFact: "moo", confusables: ["elephant"] },
+    { id: "elephant", commonName: "Elephant", scientificName: "Loxodonta", funFact: "big", confusables: ["cow"] },
+    { id: "roach", commonName: "Cockroach", scientificName: "Blattodea", funFact: "eek", confusables: ["cow"] },
+    { id: "bison", commonName: "Bison", scientificName: "Bison bison", decoy: true },
+  ],
+  images: [
+    { id: "cow-001", species: "cow", file: "dataset/cow/cow-001.jpg", credit: "x", addedIn: "0.1.0", status: "approved" },
+    { id: "roach-001", species: "roach", file: "dataset/roach/roach-001.jpg", credit: "x", addedIn: "0.1.0", status: "approved" },
+  ],
+};
 
 const SAMPLE_ISSUE = `### Claimed species
 
@@ -153,16 +170,18 @@ test("slugify reduces a claimed species to a dataset slug", () => {
 });
 
 test("resolveSpecies matches exhibits, honors the curator's species: label, rejects decoys", () => {
-  assert.equal(resolveSpecies(manifest, { claimedSpecies: "Cow" }), "cow");
-  assert.equal(resolveSpecies(manifest, { claimedSpecies: "Moose (Alces alces)" }), null);
-  assert.equal(resolveSpecies(manifest, { claimedSpecies: "whatever", speciesLabel: "elephant" }), "elephant");
-  assert.equal(resolveSpecies(manifest, { claimedSpecies: "Bison", speciesLabel: "bison" }), null, "decoys are not exhibits");
+  assert.equal(resolveSpecies(FIXTURE, { claimedSpecies: "Cow" }), "cow");
+  assert.equal(resolveSpecies(FIXTURE, { claimedSpecies: "Moose (Alces alces)" }), null);
+  assert.equal(resolveSpecies(FIXTURE, { claimedSpecies: "whatever", speciesLabel: "elephant" }), "elephant");
+  assert.equal(resolveSpecies(FIXTURE, { claimedSpecies: "Bison", speciesLabel: "bison" }), null, "decoys are not exhibits");
 });
 
 test("nextImageId increments zero-padded per species", () => {
-  assert.equal(nextImageId(manifest, "cow"), "cow-002");
-  assert.equal(nextImageId(manifest, "roach"), "roach-002");
-  assert.equal(nextImageId(manifest, "newt"), "newt-001");
+  // Fixture-based, not live-manifest-based: the approval pipeline appends to data/species.json and
+  // re-runs this suite, so absolute-id assertions must be pinned to a fixed manifest.
+  assert.equal(nextImageId(FIXTURE, "cow"), "cow-002");
+  assert.equal(nextImageId(FIXTURE, "roach"), "roach-002");
+  assert.equal(nextImageId(FIXTURE, "newt"), "newt-001");
 });
 
 test("buildImageEntry / addImage produce a valid, non-mutating entry", () => {
@@ -259,11 +278,56 @@ test("stripPngMetadata removes text/EXIF chunks and keeps structural ones", () =
   assert.ok(!text.includes("eXIf"), "exif chunk removed");
 });
 
+function webpChunk(fourcc, data) {
+  const cc = [...fourcc].map((c) => c.charCodeAt(0));
+  const size = data.length;
+  const out = [...cc, size & 0xff, (size >> 8) & 0xff, (size >> 16) & 0xff, (size >> 24) & 0xff, ...data];
+  if (size & 1) out.push(0x00); // even padding
+  return out;
+}
+
+function webpWithMetadata() {
+  const chunks = [
+    ...webpChunk("VP8X", [0x0c, 0, 0, 0, 0, 0, 0, 0, 0, 0]), // flags byte 0x0c = EXIF|XMP set
+    ...webpChunk("VP8 ", [0, 0, 0, 0]),
+    ...webpChunk("EXIF", [1, 2, 3, 4]),
+    ...webpChunk("XMP ", [0x3c, 0x3f, 0x78]),
+  ];
+  const size = 4 + chunks.length; // "WEBP" + chunks
+  return Uint8Array.from([
+    0x52, 0x49, 0x46, 0x46, size & 0xff, (size >> 8) & 0xff, (size >> 16) & 0xff, (size >> 24) & 0xff,
+    0x57, 0x45, 0x42, 0x50, ...chunks,
+  ]);
+}
+
+test("stripWebpMetadata removes EXIF/XMP chunks and clears the VP8X flag bits", () => {
+  const webp = webpWithMetadata();
+  assert.equal(detectImageType(webp), "webp");
+  assert.equal(webpHasMetadata(webp), true);
+  const stripped = stripWebpMetadata(webp);
+  assert.equal(webpHasMetadata(stripped), false, "EXIF/XMP chunks removed");
+  assert.equal(stripped[20], 0, "VP8X EXIF+XMP flag bits cleared");
+  const text = String.fromCharCode(...stripped);
+  assert.ok(!text.includes("EXIF") && !text.includes("XMP "));
+  assert.equal(stripImageMetadata(webp).stripped, true, "webp counts as verified-stripped");
+});
+
+test("stripPngMetadata bails on a crafted oversized chunk length (no hang / OOM)", () => {
+  const png = Uint8Array.from([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    0x80, 0x00, 0x00, 0x00, 0x74, 0x45, 0x58, 0x74, 0x00, 0x00, 0x00, 0x00, // len 0x80000000, "tEXt"
+  ]);
+  const out = stripPngMetadata(png); // must return, not loop forever
+  assert.ok(out instanceof Uint8Array);
+  assert.ok(out.length <= png.length);
+});
+
 test("stripImageMetadata dispatches and reports whether it stripped", () => {
   assert.equal(stripImageMetadata(syntheticJpeg()).stripped, true);
   const gif = stripImageMetadata(Uint8Array.from([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]));
-  assert.equal(gif.stripped, false);
+  assert.equal(gif.stripped, false, "GIF is not verified-stripped — approval refuses to commit it");
   assert.equal(gif.type, "gif");
   assert.equal(extForType("jpeg"), "jpg");
   assert.equal(extForType("png"), "png");
+  assert.equal(extForType("webp"), "webp");
 });

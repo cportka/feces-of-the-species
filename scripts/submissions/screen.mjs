@@ -61,6 +61,11 @@ async function main() {
     }
 
     const jsonBlock = response.content.find((b) => b.type === "text");
+    if (response.stop_reason === "max_tokens" || !jsonBlock || !jsonBlock.text) {
+      await addComment(issue.number, "🤖 My assessment came back incomplete, so I can't post a reliable verdict. A curator will review manually.");
+      await addLabels(issue.number, ["ai:flagged"]);
+      return;
+    }
     const assessment = parseAssessment(jsonBlock.text);
     const { label } = decideScreening(assessment);
     await addComment(issue.number, renderAssessmentComment(assessment, { species: sub.species }));
