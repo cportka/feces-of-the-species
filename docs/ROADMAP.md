@@ -1,8 +1,7 @@
 # Roadmap
 
 Where the museum goes from here. Versions follow SemVer; each milestone ships as a MINOR
-release with its own PRs, tests, and CHANGELOG entry (numbers are assigned when they ship —
-features kept arriving early). Order may shift; silliness will not.
+release with its own PRs, tests, and CHANGELOG entry (numbers are assigned when they ship). Order may shift; fecal standards will not.
 
 ## v0.1.0 — The relaunch *(shipped)*
 
