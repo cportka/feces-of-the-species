@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { shuffle, ordinal, buildRound, rankFor, reaction, PRAISE, CONDOLENCE } from "../js/game.js";
+import { shuffle, ordinal, buildRound, rankFor, reaction, fill } from "../js/game.js";
 
 // mulberry32 — tiny deterministic PRNG for tests.
 function seeded(seed) {
@@ -20,6 +20,7 @@ function seeded(seed) {
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const manifest = JSON.parse(readFileSync(join(root, "data/species.json"), "utf8"));
+const RANKS = manifest.text.ranks;
 
 test("shuffle returns a permutation and does not mutate its input", () => {
   const input = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -42,21 +43,37 @@ test("ordinal produces museum-grade English", () => {
   }
 });
 
-test("buildRound builds well-formed questions from the real manifest", () => {
+test("buildRound reads round length and option count from the manifest's game section", () => {
   for (let seed = 1; seed <= 20; seed++) {
     const round = buildRound(manifest, { rng: seeded(seed) });
-    assert.equal(round.length, Math.min(5, manifest.images.length));
+    assert.equal(round.length, Math.min(manifest.game.questionsPerRound, manifest.images.length));
 
     const imageIds = round.map((q) => q.image.id);
     assert.equal(new Set(imageIds).size, imageIds.length, "images repeat within a round");
 
+    const speciesIds = new Set(manifest.species.map((s) => s.id));
     for (const q of round) {
       assert.equal(q.answer, q.image.species);
-      assert.equal(q.options.length, Math.min(4, manifest.species.length));
+      assert.equal(q.options.length, manifest.game.choicesPerQuestion);
       assert.equal(new Set(q.options).size, q.options.length, "duplicate options");
       assert.ok(q.options.includes(q.answer), "answer missing from options");
-      const speciesIds = new Set(manifest.species.map((s) => s.id));
       for (const o of q.options) assert.ok(speciesIds.has(o), `unknown option '${o}'`);
+    }
+  }
+});
+
+test("distractors come from the answer's curated confusables when the list suffices", () => {
+  for (let seed = 1; seed <= 20; seed++) {
+    const round = buildRound(manifest, { rng: seeded(seed) });
+    for (const q of round) {
+      const confusables = new Set(
+        manifest.species.find((s) => s.id === q.answer).confusables,
+      );
+      for (const o of q.options) {
+        if (o === q.answer) continue;
+        assert.ok(confusables.has(o),
+          `'${o}' is not a curated confusable of '${q.answer}' — every exhibit has a full list, so no filler should appear`);
+      }
     }
   }
 });
@@ -67,21 +84,43 @@ test("buildRound answer position is not biased to one slot", () => {
     const round = buildRound(manifest, { rng: seeded(seed) });
     for (const q of round) positions.add(q.options.indexOf(q.answer));
   }
-  assert.ok(positions.size >= 3, `answer appeared in only ${positions.size} slot(s)`);
+  assert.ok(positions.size >= 4, `answer appeared in only ${positions.size} slot(s)`);
 });
 
-test("buildRound degrades gracefully on tiny datasets", () => {
+test("buildRound tops up from the species pool when confusables run short", () => {
   const tiny = {
+    game: { questionsPerRound: 3, choicesPerQuestion: 4 },
     species: [
-      { id: "cow" }, { id: "elephant" }, { id: "human" },
+      { id: "cow", confusables: ["horse"] },
+      { id: "horse", decoy: true },
+      { id: "human" },
+      { id: "roach" },
+      { id: "mouse", decoy: true },
     ],
+    images: [
+      { id: "a", species: "cow", file: "dataset/cow/a.jpg", status: "approved" },
+    ],
+  };
+  for (let seed = 1; seed <= 10; seed++) {
+    const round = buildRound(tiny, { rng: seeded(seed) });
+    assert.equal(round.length, 1, "should use every available image");
+    const q = round[0];
+    assert.equal(q.options.length, 4);
+    assert.ok(q.options.includes("cow"));
+    assert.ok(q.options.includes("horse"), "curated confusable must always be present");
+  }
+});
+
+test("buildRound degrades gracefully when species are fewer than the option count", () => {
+  const tiny = {
+    species: [{ id: "cow" }, { id: "human" }, { id: "roach" }],
     images: [
       { id: "a", species: "cow", file: "dataset/cow/a.jpg", status: "approved" },
       { id: "b", species: "human", file: "dataset/human/b.jpg", status: "approved" },
     ],
   };
   const round = buildRound(tiny, { rng: seeded(7) });
-  assert.equal(round.length, 2, "should use every available image");
+  assert.equal(round.length, 2);
   for (const q of round) {
     assert.equal(q.options.length, 3, "options capped at species count");
     assert.ok(q.options.includes(q.answer));
@@ -103,25 +142,31 @@ test("buildRound excludes pending and unknown-species images", () => {
   }
 });
 
-test("rankFor spans Fecal Fraud to Doctor of Dungology and is monotonic", () => {
-  assert.equal(rankFor(0, 5).title, "Fecal Fraud");
-  assert.equal(rankFor(5, 5).title, "Distinguished Doctor of Dungology");
-  assert.equal(rankFor(0, 0).title, "Fecal Fraud");
+test("rankFor spans the manifest ladder bottom to top and is monotonic", () => {
+  assert.equal(rankFor(0, 5, RANKS).title, RANKS[0].title);
+  assert.equal(rankFor(5, 5, RANKS).title, RANKS[RANKS.length - 1].title);
+  assert.equal(rankFor(0, 0, RANKS).title, RANKS[0].title);
   let prev = -1;
-  const ladder = [];
-  for (let i = 0; i <= 5; i++) ladder.push(rankFor(i, 5).title);
-  for (const title of ladder) {
-    const idx = ["Fecal Fraud", "Novice Nugget Noticer", "Dropping Dabbler", "Scat Scholar", "Dung Docent", "Distinguished Doctor of Dungology"].indexOf(title);
+  for (let i = 0; i <= 5; i++) {
+    const idx = RANKS.findIndex((r) => r.title === rankFor(i, 5, RANKS).title);
     assert.ok(idx >= prev, "rank ladder not monotonic");
     prev = idx;
   }
-  // Longer rounds still land on the ladder.
-  assert.equal(rankFor(10, 10).title, "Distinguished Doctor of Dungology");
+  assert.equal(rankFor(10, 10, RANKS).title, RANKS[RANKS.length - 1].title);
+  // Survives a missing ladder without crashing the results screen.
+  assert.ok(rankFor(3, 5, undefined).title.length > 0);
 });
 
-test("reaction cycles praise and condolence without running out", () => {
+test("reaction cycles the manifest's praise and condolence without running out", () => {
   for (let i = 0; i < 12; i++) {
-    assert.ok(PRAISE.includes(reaction(true, i)));
-    assert.ok(CONDOLENCE.includes(reaction(false, i)));
+    assert.ok(manifest.text.praise.includes(reaction(true, i, manifest.text)));
+    assert.ok(manifest.text.condolence.includes(reaction(false, i, manifest.text)));
   }
+  // Missing lists degrade to a plain word rather than crashing.
+  assert.ok(reaction(true, 0, {}).length > 0);
+});
+
+test("fill replaces placeholders and leaves unknown ones visible", () => {
+  assert.equal(fill("Specimen {n} of {total}", { n: 2, total: 5 }), "Specimen 2 of 5");
+  assert.equal(fill("Hello {name}", {}), "Hello {name}");
 });

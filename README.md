@@ -1,6 +1,6 @@
 # Feces of the Species
 
-> **Version:** 0.2.1 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
+> **Version:** 0.3.0 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
 > **License:** [MIT](./LICENSE) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md) ·
 > **Roadmap:** [docs/ROADMAP.md](./docs/ROADMAP.md)
 
@@ -21,9 +21,11 @@ no backend, no frameworks.
 
 - [`index.html`](./index.html) + [`js/app.js`](./js/app.js) — screens and DOM wiring.
 - [`js/game.js`](./js/game.js) — pure game logic (also runs under `node --test`).
-- [`data/species.json`](./data/species.json) — the specimen catalog: every species and every
-  approved image, with credit and provenance. This manifest is the single source of truth the
-  game plays from, and tests enforce its integrity.
+- [`data/species.json`](./data/species.json) — the content manifest and the one file to edit:
+  every species (exhibits and image-less decoy options with per-species `confusables` lists),
+  every approved image with credit and provenance, the game tuning (round length, option
+  count), and every line of museum copy — welcome text, question templates, praise,
+  condolences, and the rank ladder. Tests enforce its integrity after hand edits.
 - [`dataset/<species>/`](./dataset/) — the image dataset itself, one directory per species.
 
 ### Why a JSON manifest and not SQLite?

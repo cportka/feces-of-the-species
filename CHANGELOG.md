@@ -5,6 +5,25 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.3.0] - 2026-07-03
+
+### Added
+- Six multiple-choice options per question, laid out three across in two rows (two across on
+  narrow screens).
+- Decoy species: twenty image-less species now populate the option pool, and every exhibit
+  carries a curated `confusables` list of plausible lookalikes — the cockroach specimen now
+  keeps company with mice, rats, termites, bats, crickets, and beetles instead of elephants.
+- Manifest safety-net tests: hand edits to the JSON that would break the site (missing copy,
+  bad confusable references, a decoy with an image, too few options) fail the suite.
+
+### Changed
+- `data/species.json` is now the single editable content file: all museum copy (welcome
+  lines, question/results templates, praise, condolences, the rank ladder) and the game
+  tuning (round length, option count) moved in alongside the species and images. Edit one
+  file to change any word on the site.
+- Roadmap milestones are no longer pre-assigned version numbers (features kept landing before
+  them); they are ordered as Next / Later instead.
+
 ## [0.2.1] - 2026-07-02
 
 ### Changed
