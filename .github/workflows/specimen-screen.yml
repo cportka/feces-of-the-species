@@ -1,0 +1,37 @@
+name: specimen-screen
+
+# AI-screen a new specimen submission and post an advisory comment + label. Advise-only: this
+# workflow never writes to the dataset. Requires an ANTHROPIC_API_KEY repository secret.
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: specimen-screen-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  screen:
+    # Run on new specimen issues and when the `specimen` label is added — but not when our own
+    # ai:* labels are added (screen.mjs also re-checks and skips already-assessed issues).
+    if: >-
+      contains(github.event.issue.labels.*.name, 'specimen') &&
+      (github.event.action == 'opened' || github.event.label.name == 'specimen')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install the Anthropic SDK (Action-only; not committed)
+        run: npm install --no-save @anthropic-ai/sdk
+      - name: Screen the submission
+        run: node scripts/submissions/screen.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

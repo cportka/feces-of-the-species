@@ -231,6 +231,11 @@ h2 {
 
 .home-actions { margin: 1rem 0; }
 
+/* The /submit page's "how it works" list. */
+.steps { margin: 0.5rem 0 0; padding-left: 1.3rem; line-height: 1.55; }
+.steps li { margin: 0.5rem 0; }
+a.btn { display: inline-block; text-decoration: none; }
+
 .colophon {
   margin-top: 2.5rem;
   font-size: 0.9rem;

@@ -1,6 +1,6 @@
 # Feces of the Species
 
-> **Version:** 0.3.1 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
+> **Version:** 0.4.0 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
 > **License:** [MIT](./LICENSE) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md) ·
 > **Roadmap:** [docs/ROADMAP.md](./docs/ROADMAP.md)
 
@@ -47,10 +47,16 @@ a branch, updates tests + CI, and merges on green. Versions follow SemVer and st
 
 ## Contributing a specimen
 
-Found some in the wild? Open a
+Found some in the wild? The [**/submit**](./submit.html) page walks you through it, or open a
 [specimen submission](https://github.com/cportka/feces-of-the-species/issues/new?template=specimen-submission.yml)
-with your photograph and your best identification. The full AI-screened submission pipeline
-lands sometime in the future (see the [roadmap](./docs/ROADMAP.md)); until then the curator reviews by hand.
+directly with your photograph and your best identification.
+
+Each submission is screened by an AI vision model (Claude) — is it feces, is the photo clear, does
+it match the claim? — which posts an advisory note but never decides. A human curator approves or
+declines. Approval strips the image's location metadata, credits you, and adds it to the rotation.
+The whole pipeline runs on GitHub Actions (`.github/workflows/specimen-*.yml` +
+`scripts/submissions/`, with the logic unit-tested); the curator's guide is
+[docs/SUBMISSIONS.md](./docs/SUBMISSIONS.md).
 
 ## A note on the photographs
 

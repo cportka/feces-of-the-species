@@ -1,0 +1,56 @@
+name: specimen-approve
+
+# When the curator adds the `approved` label to a specimen submission, commit the (EXIF-stripped)
+# image into the dataset and open a version-bumped pull request that closes the issue. The change
+# is validated by the test suite here before the PR is opened; a human merges it (never a direct
+# push to master).
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: specimen-approve-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    if: github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Prepare dataset change
+        id: prepare
+        run: node scripts/submissions/approve.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Validate dataset + version sync
+        if: steps.prepare.outputs.ok == 'true'
+        run: |
+          node --test tests/*.test.mjs
+          bash tests/run-tests.sh
+      - name: Open pull request
+        if: steps.prepare.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${{ steps.prepare.outputs.branch }}"
+          git add -A
+          git commit -m "Add specimen ${{ steps.prepare.outputs.image_id }} from #${{ steps.prepare.outputs.issue }} (v${{ steps.prepare.outputs.version }})"
+          git push -u origin "${{ steps.prepare.outputs.branch }}"
+          gh pr create --base master --head "${{ steps.prepare.outputs.branch }}" \
+            --title "Add specimen ${{ steps.prepare.outputs.image_id }} (v${{ steps.prepare.outputs.version }})" \
+            --body "Approved field submission — image EXIF-stripped and added to the dataset. Closes #${{ steps.prepare.outputs.issue }}."
+          gh issue comment "${{ steps.prepare.outputs.issue }}" --body "🎉 Approved and queued as a pull request from \`${{ steps.prepare.outputs.branch }}\`. Merging it publishes the specimen into the rotation."
