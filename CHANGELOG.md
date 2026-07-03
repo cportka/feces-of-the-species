@@ -5,6 +5,12 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.3.1] - 2026-07-03
+
+### Fixed
+- On phones, the welcome plaque's type now scales with the viewport so each engraved line
+  stays on a single line instead of wrapping in two.
+
 ## [0.3.0] - 2026-07-03
 
 ### Added
