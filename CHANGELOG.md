@@ -5,6 +5,35 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.4.0] - 2026-07-03
+
+### Added
+- The field-submission pipeline (roadmap "Next" milestone), all on GitHub infrastructure so the
+  site stays backend-free:
+  - **AI screening** (`specimen-screen.yml` + `scripts/submissions/screen.mjs`): on a new
+    `specimen` issue, a GitHub Action sends the attached photo to Claude (`claude-opus-4-8`, vision
+    + adaptive thinking + structured output) with a rubric — is it feces, is it clear, does it match
+    the claim — and posts an advisory comment plus one label (`ai:pass` / `ai:flagged` /
+    `ai:reject-suggested`). The AI only advises; it never approves, rejects, or writes to the dataset.
+  - **Approval** (`specimen-approve.yml` + `scripts/submissions/approve.mjs`): adding the `approved`
+    label strips the image's EXIF/XMP/location metadata — pure-JS, dependency-free, for JPEG, PNG,
+    and WebP (GIF is refused rather than committed unstripped) — commits it to `dataset/<species>/`
+    with submitter credit, bumps the PATCH version, and opens a pre-validated pull request that
+    closes the issue.
+  - The five pipeline labels (`ai:pass`, `ai:flagged`, `ai:reject-suggested`, `approved`,
+    `declined`); the `specimen` intake label already existed.
+- `submit.html` — a starfield "/submit" page explaining the process and deep-linking the issue form;
+  the home-page footer now points here.
+- `scripts/submissions/` pure logic modules (issue parsing, screening rubric/decision, manifest-entry
+  generation, image-metadata stripping) with 19 unit tests, including EXIF stripping verified against
+  a real dataset photo.
+- `docs/SUBMISSIONS.md` — the curator's guide (review queue, approving a new species, the
+  `ANTHROPIC_API_KEY` secret, what's deferred).
+
+### Changed
+- The `.claude/settings.json` continues to gate all writes; the Anthropic SDK is installed only at
+  Action runtime (`npm install --no-save`), so the repository stays dependency-free on disk.
+
 ## [0.3.1] - 2026-07-03
 
 ### Fixed

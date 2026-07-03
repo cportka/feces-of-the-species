@@ -24,11 +24,7 @@ release with its own PRs, tests, and CHANGELOG entry (numbers are assigned when 
   plus a pool of decoy species — guesses are hard now.
 - ✅ All museum copy and game tuning consolidated into `data/species.json`, guarded by tests.
 
-## Next — Field submissions (the AI-screened pipeline)
-
-*The `specimen` intake label exists as of v0.1; the pipeline labels (`ai:pass`, `ai:flagged`,
-`approved`, `declined`) must be created alongside the submissions Actions — GitHub silently drops
-labels that don't exist in the repo.*
+## v0.4.0 — Field submissions (the AI-screened pipeline) *(shipped)*
 
 Visitors who find feces in the wild donate a photograph and their best identification. The
 pipeline keeps the site static (GitHub Pages) by running everything through GitHub
@@ -66,15 +62,20 @@ zero infrastructure).
 
 Work items:
 
-- [ ] Create the pipeline labels (`ai:pass`, `ai:flagged`, `approved`, `declined`).
-- [ ] Screening Action: vision API call with the structured rubric, assessment comment and
-      labels; API key in repo secrets; rate-limited and gated to the `specimen` label.
-- [ ] Approval Action: EXIF strip, format/size normalization, dataset commit, manifest entry
-      with submitter credit, PATCH bump, closing thank-you.
-- [ ] `/submit` page on the site.
-- [ ] Tests: manifest-entry generation, image normalization, label-gating logic.
+- [x] Create the pipeline labels (`ai:pass`, `ai:flagged`, `ai:reject-suggested`, `approved`, `declined`).
+- [x] Screening Action: vision API call (`claude-opus-4-8`) with the structured rubric, assessment
+      comment and labels; API key in repo secret; gated to the `specimen` label.
+- [x] Approval Action: EXIF strip (pure-JS), dataset commit, manifest entry with submitter credit,
+      PATCH bump — opens a pre-validated PR that closes the issue.
+- [x] `/submit` page on the site (`submit.html`).
+- [x] Tests: issue parsing, screening decision, manifest-entry generation, image-metadata stripping.
 
-## Later — The leaderboard
+Deferred (tracked here rather than blocking the milestone): active **resolution downscaling** of
+approved images (needs an image library — the pipeline strips metadata and caps byte size for now),
+and running the push/PR CI *on the generated PR* (the approval Action validates inline before opening
+it, since PRs opened by the Actions token don't re-trigger workflows). See `docs/SUBMISSIONS.md`.
+
+## Next — The leaderboard
 
 Static hosting makes a shared leaderboard the first feature that genuinely needs state.
 Planned approach:

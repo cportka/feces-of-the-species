@@ -81,7 +81,7 @@ function showHome() {
           <a href="https://github.com/cportka/feces-of-the-species/blob/master/docs/ROADMAP.md">${escapeHtml(TXT.home.roadmapLink)}</a>
         </p>
         <p>${escapeHtml(TXT.home.submitLine)}
-          <a href="https://github.com/cportka/feces-of-the-species/issues/new?template=specimen-submission.yml">${escapeHtml(TXT.home.submitLink)}</a>.
+          <a href="submit.html">${escapeHtml(TXT.home.submitLink)}</a>.
         </p>
       </footer>
     </section>

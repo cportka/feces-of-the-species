@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donate a specimen · Feces of the Species</title>
+  <meta name="description" content="Found feces in the wild? Donate a photograph to the museum's collection. AI screens each submission before a human curator reviews it.">
+  <link rel="canonical" href="https://fecesofthespecies.com/submit.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Donate a specimen · Feces of the Species">
+  <meta property="og:description" content="Found feces in the wild? Donate a photograph to the museum's collection.">
+  <meta property="og:url" content="https://fecesofthespecies.com/submit.html">
+  <meta property="og:image" content="https://fecesofthespecies.com/assets/social-preview.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A9%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="fullScreen" id="fullScreen" aria-hidden="true">
+    <canvas id="canvas2d"></canvas>
+  </div>
+  <main id="app" aria-live="polite">
+    <section class="hero">
+      <h1 class="fade-in fast">Donate a Specimen</h1>
+      <div class="plaque fade-in medium">
+        <p>Found some in the wild? The museum is always accepting new specimens.</p>
+        <p>Photograph your find, tell us whose you think it is, and it may join the permanent
+          collection — with your credit attached.</p>
+      </div>
+
+      <div class="plaque fade-in slow" style="text-align: left;">
+        <p style="text-align: center;"><strong>How a submission becomes an exhibit</strong></p>
+        <ol class="steps">
+          <li><strong>You submit.</strong> Attach a clear photo and your best species guess through
+            a short form. Any common image type works.</li>
+          <li><strong>AI screens it.</strong> A vision model checks — is it actually feces? is the
+            photo clear enough? does it plausibly match your guess? — and posts an advisory note.
+            The AI only advises; it never has the final say.</li>
+          <li><strong>The curator reviews.</strong> A human approves or politely declines every
+            submission.</li>
+          <li><strong>Approval publishes it.</strong> Approved photos are stripped of location
+            metadata, credited to you, and dropped into the random rotation.</li>
+        </ol>
+      </div>
+
+      <div class="fade-in slowest home-actions">
+        <a class="btn primary" href="https://github.com/cportka/feces-of-the-species/issues/new?template=specimen-submission.yml">Donate a specimen&hellip;</a>
+        <p class="best-score">A free GitHub account is all you need.</p>
+      </div>
+
+      <footer class="fade-in slowest colophon">
+        <p><a href="index.html">&larr; back to the museum</a> &middot;
+          <a href="https://github.com/cportka/feces-of-the-species/blob/master/docs/SUBMISSIONS.md">how the pipeline works</a></p>
+      </footer>
+    </section>
+  </main>
+  <script type="module">
+    import { startStarfield } from "./js/starfield.js";
+    startStarfield(document.getElementById("fullScreen"));
+  </script>
+</body>
+
+</html>
