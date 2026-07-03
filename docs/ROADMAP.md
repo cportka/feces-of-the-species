@@ -20,10 +20,9 @@ release with its own PRs, tests, and CHANGELOG entry. Order may shift; silliness
 
 ## v0.3.0 — Field submissions (the AI-screened pipeline)
 
-*Tracking issue: [#1](https://github.com/cportka/feces-of-the-species/issues/1). The `specimen`
-intake label exists as of v0.1; the pipeline labels (`ai:pass`, `ai:flagged`, `approved`,
-`declined`) must be created with the v0.3 Actions — GitHub silently drops labels that don't
-exist in the repo.*
+*The `specimen` intake label exists as of v0.1; the pipeline labels (`ai:pass`, `ai:flagged`,
+`approved`, `declined`) must be created alongside the v0.3 Actions — GitHub silently drops
+labels that don't exist in the repo.*
 
 Visitors who find feces in the wild donate a photograph and their best identification. The
 pipeline keeps the site static (GitHub Pages) by running everything through GitHub
@@ -58,6 +57,16 @@ infrastructure — no backend to run, no uploads endpoint to secure:
 Also in this milestone: a `/submit` page on the site that explains the process and deep-links the issue
 form (a native upload form needs a backend; the issue form gets us a working pipeline with
 zero infrastructure).
+
+Work items:
+
+- [ ] Create the pipeline labels (`ai:pass`, `ai:flagged`, `approved`, `declined`).
+- [ ] Screening Action: vision API call with the structured rubric, assessment comment and
+      labels; API key in repo secrets; rate-limited and gated to the `specimen` label.
+- [ ] Approval Action: EXIF strip, format/size normalization, dataset commit, manifest entry
+      with submitter credit, PATCH bump, closing thank-you.
+- [ ] `/submit` page on the site.
+- [ ] Tests: manifest-entry generation, image normalization, label-gating logic.
 
 ## v0.4.0 — The leaderboard
 
