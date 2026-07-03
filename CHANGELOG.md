@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org). Every change bumps the version and adds an entry
 below.
 
+## [0.2.1] - 2026-07-02
+
+### Changed
+- Planning now lives entirely in this changelog and `docs/ROADMAP.md`: the v0.3 tracking
+  issue's work items were folded into the roadmap and the issue closed. (GitHub issues remain
+  the *intake channel* for visitor specimen submissions — that part is by design.)
+
 ## [0.2.0] - 2026-07-02
 
 The heritage restoration. The 2013 charm returns to the modern museum.

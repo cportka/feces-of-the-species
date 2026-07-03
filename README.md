@@ -1,6 +1,6 @@
 # Feces of the Species
 
-> **Version:** 0.2.0 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
+> **Version:** 0.2.1 · **Site:** [fecesofthespecies.com](https://fecesofthespecies.com) ·
 > **License:** [MIT](./LICENSE) · **Changelog:** [CHANGELOG.md](./CHANGELOG.md) ·
 > **Roadmap:** [docs/ROADMAP.md](./docs/ROADMAP.md)
 
